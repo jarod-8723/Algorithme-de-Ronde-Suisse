@@ -1,0 +1,281 @@
+========================================
+         RONDE N°1
+========================================
+
+/!\  ÉQUIPE EXEMPTÉE : Joueur_20 & Joueur_39 (+1 point chacun)
+
+--- MATCH n°1 --- (0 pts)
+Joueur_33 & Joueur_32
+VS
+Joueur_15 & Joueur_24
+
+--- MATCH n°2 --- (0 pts)
+Joueur_18 & Joueur_38
+VS
+Joueur_45 & Joueur_46
+
+--- MATCH n°3 --- (0 pts)
+Joueur_7 & Joueur_30
+VS
+Joueur_16 & Joueur_10
+
+--- MATCH n°4 --- (0 pts)
+Joueur_14 & Joueur_21
+VS
+Joueur_12 & Joueur_19
+
+--- MATCH n°5 --- (0 pts)
+Joueur_11 & Joueur_6
+VS
+Joueur_17 & Joueur_3
+
+--- MATCH n°6 --- (0 pts)
+Joueur_25 & Joueur_31
+VS
+Joueur_36 & Joueur_37
+
+--- MATCH n°7 --- (0 pts)
+Joueur_26 & Joueur_4
+VS
+Joueur_1 & Joueur_9
+
+--- MATCH n°8 --- (0 pts)
+Joueur_27 & Joueur_2
+VS
+Joueur_28 & Joueur_5
+
+--- MATCH n°9 --- (0 pts)
+Joueur_22 & Joueur_41
+VS
+Joueur_35 & Joueur_29
+
+--- MATCH n°10 --- (0 pts)
+Joueur_23 & Joueur_8
+VS
+Joueur_13 & Joueur_40
+========================================
+         RONDE N°1
+========================================
+
+/!\  ÉQUIPE EXEMPTÉE : Joueur_23 & Joueur_1 (+1 point chacun)
+
+--- MATCH n°1 --- (0 pts)
+Joueur_46 & Joueur_11
+VS
+Joueur_37 & Joueur_35
+
+--- MATCH n°2 --- (0 pts)
+Joueur_9 & Joueur_33
+VS
+Joueur_34 & Joueur_10
+
+--- MATCH n°3 --- (0 pts)
+Joueur_2 & Joueur_45
+VS
+Joueur_8 & Joueur_38
+
+--- MATCH n°4 --- (0 pts)
+Joueur_22 & Joueur_21
+VS
+Joueur_4 & Joueur_25
+
+--- MATCH n°5 --- (0 pts)
+Joueur_17 & Joueur_41
+VS
+Joueur_18 & Joueur_36
+
+--- MATCH n°6 --- (0 pts)
+Joueur_5 & Joueur_19
+VS
+Joueur_31 & Joueur_24
+
+--- MATCH n°7 --- (0 pts)
+Joueur_32 & Joueur_16
+VS
+Joueur_7 & Joueur_12
+
+--- MATCH n°8 --- (0 pts)
+Joueur_14 & Joueur_3
+VS
+Joueur_6 & Joueur_13
+
+--- MATCH n°9 --- (0 pts)
+Joueur_29 & Joueur_26
+VS
+Joueur_20 & Joueur_28
+
+--- MATCH n°10 --- (0 pts)
+Joueur_39 & Joueur_30
+VS
+Joueur_40 & Joueur_15
+========================================
+         RONDE N°2
+========================================
+
+/!\  ÉQUIPE EXEMPTÉE : Joueur_39 & Joueur_26 (+1 point chacun)
+
+--- MATCH n°1 --- (0 pts)
+Joueur_45 & Joueur_37
+VS
+Joueur_33 & Joueur_12
+
+--- MATCH n°2 --- (0 pts)
+Joueur_40 & Joueur_1
+VS
+Joueur_36 & Joueur_14
+
+--- MATCH n°3 --- (0 pts)
+Joueur_32 & Joueur_9
+VS
+Joueur_22 & Joueur_31
+
+--- MATCH n°4 --- (0 pts)
+Joueur_8 & Joueur_38
+VS
+Joueur_35 & Joueur_29
+
+--- MATCH n°5 --- (0 pts)
+Joueur_3 & Joueur_16
+VS
+Joueur_24 & Joueur_15
+
+--- MATCH n°6 --- (0 pts)
+Joueur_18 & Joueur_21
+VS
+Joueur_28 & Joueur_30
+
+--- MATCH n°7 --- (1 pts)
+Joueur_4 & Joueur_34
+VS
+Joueur_27 & Joueur_10
+
+--- MATCH n°8 --- (1 pts)
+Joueur_46 & Joueur_5
+VS
+Joueur_13 & Joueur_6
+
+--- MATCH n°9 --- (1 pts)
+Joueur_41 & Joueur_2
+VS
+Joueur_25 & Joueur_17
+
+--- MATCH n°10 --- (1 pts)
+Joueur_19 & Joueur_7
+VS
+Joueur_23 & Joueur_11
+========================================
+         RONDE N°3
+========================================
+
+/!\  ÉQUIPE EXEMPTÉE : Joueur_1 & Joueur_29 (+1 point chacun)
+
+--- MATCH n°1 --- (0 pts)
+Joueur_8 & Joueur_21
+VS
+Joueur_33 & Joueur_44
+
+--- MATCH n°2 --- (0 pts)
+Joueur_24 & Joueur_45
+VS
+Joueur_40 & Joueur_18
+
+--- MATCH n°3 --- (0 pts)
+Joueur_38 & Joueur_9
+VS
+Joueur_37 & Joueur_12
+
+--- MATCH n°4 --- (1 pts)
+Joueur_26 & Joueur_35
+VS
+Joueur_16 & Joueur_31
+
+--- MATCH n°5 --- (1 pts)
+Joueur_15 & Joueur_11
+VS
+Joueur_4 & Joueur_6
+
+--- MATCH n°6 --- (1 pts)
+Joueur_36 & Joueur_42
+VS
+Joueur_20 & Joueur_5
+
+--- MATCH n°7 --- (1 pts)
+Joueur_23 & Joueur_17
+VS
+Joueur_25 & Joueur_14
+
+--- MATCH n°8 --- (1 pts)
+Joueur_43 & Joueur_3
+VS
+Joueur_34 & Joueur_30
+
+--- MATCH n°9 --- (2 pts)
+Joueur_10 & Joueur_13
+VS
+Joueur_2 & Joueur_39
+
+--- MATCH n°10 --- (2 pts)
+Joueur_28 & Joueur_19
+VS
+Joueur_27 & Joueur_7
+========================================
+         RONDE N°4
+========================================
+
+/!\  ÉQUIPE EXEMPTÉE : Joueur_38 & Joueur_14 (+1 point chacun)
+
+--- MATCH n°1 --- (0 pts)
+Joueur_45 & Joueur_9
+VS
+Joueur_32 & Joueur_40
+
+--- MATCH n°2 --- (0 pts)
+Joueur_44 & Joueur_33
+VS
+Joueur_37 & Joueur_18
+
+--- MATCH n°3 --- (1 pts)
+Joueur_24 & Joueur_30
+VS
+Joueur_36 & Joueur_12
+
+--- MATCH n°4 --- (1 pts)
+Joueur_1 & Joueur_17
+VS
+Joueur_6 & Joueur_4
+
+--- MATCH n°5 --- (1 pts)
+Joueur_22 & Joueur_21
+VS
+Joueur_23 & Joueur_29
+
+--- MATCH n°6 --- (1 pts)
+Joueur_42 & Joueur_35
+VS
+Joueur_34 & Joueur_26
+
+--- MATCH n°7 --- (2 pts)
+Joueur_8 & Joueur_28
+VS
+Joueur_3 & Joueur_5
+
+--- MATCH n°8 --- (2 pts)
+Joueur_41 & Joueur_43
+VS
+Joueur_19 & Joueur_16
+
+--- MATCH n°9 --- (2 pts)
+Joueur_20 & Joueur_31
+VS
+Joueur_39 & Joueur_11
+
+--- MATCH n°10 --- (3 pts)
+Joueur_2 & Joueur_13
+VS
+Joueur_27 & Joueur_7
+
+========================================
+         Fin de la ronde-suisse
+========================================
+
+Vainqueur : Joueur_2 & Joueur_13 !!
