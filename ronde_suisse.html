@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ronde Suisse</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f7f6;
+    --surface: #ffffff;
+    --border: #e2e2e0;
+    --border-strong: #c8c8c5;
+    --text: #1a1a18;
+    --text-secondary: #6b6b68;
+    --text-muted: #9b9b97;
+    --accent: #2563eb;
+    --accent-light: #eff4ff;
+    --accent-border: #bfcfff;
+    --danger: #dc2626;
+    --danger-light: #fef2f2;
+    --success: #16a34a;
+    --success-light: #f0fdf4;
+    --warning: #d97706;
+    --warning-light: #fffbeb;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ─── Layout ─── */
+  .app { max-width: 900px; margin: 0 auto; padding: 24px 16px 64px; }
+
+  .header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 20px 0 28px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+  }
+  .header-logo {
+    width: 36px; height: 36px;
+    background: var(--text);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .header-logo svg { width: 18px; height: 18px; fill: white; }
+  .header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
+  .header p { font-size: 13px; color: var(--text-secondary); }
+
+  /* ─── Steps nav ─── */
+  .steps-nav {
+    display: flex; align-items: center; gap: 0;
+    margin-bottom: 32px;
+  }
+  .step-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--text-muted);
+    cursor: default; user-select: none;
+  }
+  .step-item.active { color: var(--text); font-weight: 500; }
+  .step-item.done { color: var(--accent); }
+  .step-num {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--border);
+    color: var(--text-muted);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .step-item.active .step-num { background: var(--text); color: white; }
+  .step-item.done .step-num { background: var(--accent); color: white; }
+  .step-sep {
+    flex: 1; height: 1px;
+    background: var(--border);
+    margin: 0 12px;
+    min-width: 20px;
+  }
+  .step-sep.done { background: var(--accent); }
+
+  /* ─── Sections ─── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ─── Cards ─── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 14px; font-weight: 600;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title svg { width: 16px; height: 16px; opacity: 0.5; flex-shrink: 0; }
+
+  /* ─── Upload zone ─── */
+  .upload-zone {
+    border: 1.5px dashed var(--border-strong);
+    border-radius: var(--radius);
+    padding: 36px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: var(--accent-light); }
+  .upload-zone svg { width: 28px; height: 28px; color: var(--text-muted); margin: 0 auto 12px; display: block; }
+  .upload-zone p { font-size: 14px; color: var(--text-secondary); }
+  .upload-zone span { font-size: 12px; color: var(--text-muted); margin-top: 4px; display: block; }
+  .upload-zone input { display: none; }
+
+  /* ─── Player list ─── */
+  .player-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+  }
+  .player-chip {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    cursor: pointer;
+    transition: border-color 0.1s, background 0.1s;
+    user-select: none;
+  }
+  .player-chip:hover { border-color: var(--border-strong); }
+  .player-chip.absent {
+    opacity: 0.45;
+    background: var(--bg);
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+  .player-chip .pts-badge {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg);
+    border-radius: 4px;
+    padding: 1px 5px;
+    flex-shrink: 0;
+  }
+  .player-chip .check {
+    width: 16px; height: 16px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .player-chip:not(.absent) .check { border-color: var(--success); background: var(--success-light); }
+  .player-chip:not(.absent) .check::after {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+  }
+  .player-name { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ─── Buttons ─── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.1s, border-color 0.1s, opacity 0.1s;
+    line-height: 1;
+  }
+  .btn-primary {
+    background: var(--text);
+    color: white;
+    border-color: var(--text);
+  }
+  .btn-primary:hover { background: #2d2d2b; }
+  .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+  .btn-secondary:hover { background: var(--bg); }
+  .btn-danger {
+    background: var(--danger-light);
+    color: var(--danger);
+    border-color: #fca5a5;
+  }
+  .btn-danger:hover { background: #fee2e2; }
+  .btn-accent {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .btn-accent:hover { background: #1d4ed8; }
+  .btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  .actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+  /* ─── Match cards ─── */
+  .match-grid { display: grid; gap: 12px; }
+  .match-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .match-header {
+    padding: 10px 16px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; color: var(--text-secondary);
+  }
+  .match-header .pts-tag {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px; font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .match-body { padding: 14px 16px; display: flex; gap: 12px; align-items: stretch; }
+  .match-team {
+    flex: 1;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    min-width: 0;
+  }
+  .match-team:hover { border-color: var(--accent-border); background: var(--accent-light); }
+  .match-team.winner {
+    border-color: var(--success);
+    background: var(--success-light);
+  }
+  .match-team.loser { opacity: 0.45; }
+  .match-team .team-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 6px; }
+  .match-team .team-names { font-size: 13px; font-weight: 500; line-height: 1.6; }
+  .match-vs {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: var(--text-muted);
+    padding: 0 4px; flex-shrink: 0;
+  }
+  .match-card.resolved .match-header { background: var(--success-light); border-color: #bbf7d0; }
+
+  /* ─── Classement ─── */
+  .ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .ranking-table th {
+    text-align: left; font-size: 11px; font-weight: 600;
+    color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ranking-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .ranking-table tr:last-child td { border-bottom: none; }
+  .ranking-table tr:hover td { background: var(--bg); }
+  .rank-pos { font-weight: 600; color: var(--text-muted); width: 32px; }
+  .rank-pts { font-weight: 700; font-size: 15px; color: var(--text); text-align: right; }
+  .rank-gold td { background: #fffbeb; }
+  .rank-silver td { background: #f8fafc; }
+  .rank-bronze td { background: #fff7ed; }
+
+  /* ─── Retardataire ─── */
+  .late-form {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  }
+  .late-form input[type=text] {
+    flex: 1; min-width: 160px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    font-size: 13px;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+  }
+  .late-form input[type=text]:focus { border-color: var(--accent); }
+
+  /* ─── Alert banners ─── */
+  .alert {
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    margin-bottom: 12px;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .alert svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; }
+  .alert-info { background: var(--accent-light); color: #1e40af; border: 1px solid var(--accent-border); }
+  .alert-warning { background: var(--warning-light); color: #92400e; border: 1px solid #fcd34d; }
+  .alert-success { background: var(--success-light); color: #14532d; border: 1px solid #bbf7d0; }
+
+  /* ─── Exemptés tag ─── */
+  .exempt-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--warning-light); color: var(--warning);
+    border: 1px solid #fcd34d;
+    border-radius: 4px;
+    font-size: 12px; font-weight: 500;
+    padding: 3px 8px;
+  }
+
+  /* ─── Section title ─── */
+  .section-title {
+    font-size: 16px; font-weight: 600; margin-bottom: 4px; letter-spacing: -0.2px;
+  }
+  .section-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
+
+  /* ─── Ronde info bar ─── */
+  .ronde-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+  }
+  .ronde-bar .ronde-num { font-size: 15px; font-weight: 700; }
+  .ronde-bar .ronde-meta { font-size: 13px; color: var(--text-secondary); }
+
+  /* ─── Progress bar ─── */
+  .progress-wrap { margin-bottom: 20px; }
+  .progress-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .progress-bar { height: 4px; background: var(--border); border-radius: 2px; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
+
+  /* ─── Empty state ─── */
+  .empty {
+    text-align: center; padding: 40px 16px;
+    color: var(--text-muted); font-size: 14px;
+  }
+  .empty svg { width: 36px; height: 36px; margin: 0 auto 12px; display: block; opacity: 0.3; }
+
+  /* ─── Divider ─── */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* ─── Toast ─── */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--text);
+    color: white;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    z-index: 999;
+  }
+  #toast.show { opacity: 1; transform: none; }
+
+  /* ─── Select all bar ─── */
+  .select-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .select-bar span { font-size: 13px; color: var(--text-secondary); }
+
+  @media (max-width: 560px) {
+    .card { padding: 16px; }
+    .match-body { flex-direction: column; }
+    .match-vs { padding: 2px 0; }
+    .steps-nav .step-label { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-logo">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Ronde Suisse</h1>
+      <p>Gestion de tournoi en doubles</p>
+    </div>
+  </div>
+
+  <!-- Steps nav -->
+  <div class="steps-nav">
+    <div class="step-item active" id="nav-0">
+      <div class="step-num">1</div>
+      <span class="step-label">Joueurs</span>
+    </div>
+    <div class="step-sep" id="sep-0"></div>
+    <div class="step-item" id="nav-1">
+      <div class="step-num">2</div>
+      <span class="step-label">Ronde</span>
+    </div>
+    <div class="step-sep" id="sep-1"></div>
+    <div class="step-item" id="nav-2">
+      <div class="step-num">3</div>
+      <span class="step-label">Scores</span>
+    </div>
+    <div class="step-sep" id="sep-2"></div>
+    <div class="step-item" id="nav-3">
+      <div class="step-num">4</div>
+      <span class="step-label">Classement</span>
+    </div>
+  </div>
+
+  <!-- Section 0 : Import & sélection joueurs -->
+  <div class="section active" id="sec-0">
+    <div class="section-title">Import des joueurs</div>
+    <div class="section-desc">Importe la liste Excel puis sélectionne les joueurs présents.</div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Fichier Excel
+      </div>
+      <div class="upload-zone" id="upload-zone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="13" x2="12" y2="18"/><line x1="9" y1="16" x2="15" y2="16"/></svg>
+        <p>Glisse le fichier ici ou <strong>clique pour parcourir</strong></p>
+        <span>Format .xlsx — colonne "Nom" requise</span>
+        <input type="file" id="csv-input" accept=".xlsx,.xls">
+      </div>
+    </div>
+
+    <div id="players-section" style="display:none">
+      <div class="card">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Sélection des joueurs
+        </div>
+        <div class="select-bar">
+          <span id="players-count">0 joueurs sélectionnés</span>
+          <div class="actions">
+            <button class="btn btn-secondary" onclick="toggleAll(true)">Tous sélectionner</button>
+            <button class="btn btn-secondary" onclick="toggleAll(false)">Tout désélectionner</button>
+          </div>
+        </div>
+        <div class="player-list" id="player-list"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="start-btn" onclick="lancerTournoi()" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Lancer le tournoi
+        </button>
+        <span id="start-warn" style="font-size:12px;color:var(--text-muted)"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 1 : Affichage ronde -->
+  <div class="section" id="sec-1">
+    <div class="ronde-bar">
+      <div>
+        <div class="ronde-num" id="ronde-num-label">Ronde 1</div>
+        <div class="ronde-meta" id="ronde-meta">— matchs</div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary" onclick="exporterRonde()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exporter .txt
+        </button>
+      </div>
+    </div>
+
+    <!-- Retardataire -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Ajouter un retardataire
+      </div>
+      <div id="late-info" class="alert alert-info" style="margin-bottom:12px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="late-info-text">Le retardataire sera ajouté avec la partie entière de la moyenne des points.</span>
+      </div>
+      <div class="late-form">
+        <input type="text" id="late-name" placeholder="Nom du joueur" onkeydown="if(event.key==='Enter') ajouterRetardataire()">
+        <button class="btn btn-accent" onclick="ajouterRetardataire()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Ajouter
+        </button>
+      </div>
+    </div>
+
+    <div id="exempt-banner" style="display:none;margin-bottom:16px"></div>
+    <div class="match-grid" id="match-grid"></div>
+
+    <div class="divider"></div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="goToScores()">
+        Saisir les scores →
+      </button>
+    </div>
+  </div>
+
+  <!-- Section 2 : Saisie des scores -->
+  <div class="section" id="sec-2">
+    <div class="section-title">Résultats de la ronde</div>
+    <div class="section-desc">Clique sur l'équipe gagnante pour chaque match.</div>
+
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="scores-progress-text">0 / 0 matchs complétés</span>
+        <span id="scores-progress-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="scores-progress-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="match-grid" id="scores-grid"></div>
+
+    <div class="divider"></div>
+    <div class="actions">
+      <button class="btn btn-primary" id="validate-btn" onclick="validerScores()" disabled>
+        Valider et voir le classement
+      </button>
+      <button class="btn btn-secondary" onclick="goTo(1)">← Retour</button>
+    </div>
+  </div>
+
+  <!-- Section 3 : Classement -->
+  <div class="section" id="sec-3">
+    <div class="section-title">Classement général</div>
+    <div class="section-desc" id="ranking-desc">Après 0 ronde</div>
+
+    <div class="card" style="padding:0">
+      <table class="ranking-table" id="ranking-table">
+        <thead>
+          <tr>
+            <th class="rank-pos">#</th>
+            <th>Joueur</th>
+            <th style="text-align:right">Points</th>
+            <th style="width:36px"></th>
+          </tr>
+        </thead>
+        <tbody id="ranking-body"></tbody>
+      </table>
+    </div>
+
+    <div class="divider"></div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="nouvelleRonde()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.29"/></svg>
+        Ronde suivante
+      </button>
+      <button class="btn btn-secondary" onclick="exporterClassement()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exporter classement
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+// ─── État global ───────────────────────────────────────────────
+let players = [];       // { nom, points, exempt_count }
+let currentStep = 0;
+let currentRonde = 0;
+let currentMatchs = []; // { e1:[n1,n2], e2:[n1,n2], points, winner: null|1|2, exempt }
+let exemptHistory = []; // noms déjà exemptés
+let rondeLog = [];      // logs texte
+
+// ─── Navigation ───────────────────────────────────────────────
+function goTo(step) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + step).classList.add('active');
+  currentStep = step;
+  updateNav();
+}
+function updateNav() {
+  for (let i = 0; i < 4; i++) {
+    const el = document.getElementById('nav-' + i);
+    const sep = document.getElementById('sep-' + i);
+    el.classList.remove('active','done');
+    if (i < currentStep) { el.classList.add('done'); if(sep) sep.classList.add('done'); }
+    else if (i === currentStep) { el.classList.add('active'); if(sep) sep.classList.remove('done'); }
+    else { if(sep) sep.classList.remove('done'); }
+  }
+}
+
+// ─── Excel Import (SheetJS) ───────────────────────────────────
+const uploadZone = document.getElementById('upload-zone');
+const csvInput = document.getElementById('csv-input');
+
+uploadZone.addEventListener('click', () => csvInput.click());
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault(); uploadZone.classList.remove('drag');
+  if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+});
+csvInput.addEventListener('change', () => { if (csvInput.files[0]) handleFile(csvInput.files[0]); });
+
+function handleFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const wb = XLSX.read(data, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      // Convertit en tableau de tableaux (raw)
+      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+
+      // Cherche la ligne d'en-tête contenant "Nom" dans les 5 premières lignes
+      let headerIdx = -1;
+      let nomCol = -1;
+      for (let i = 0; i < Math.min(5, rows.length); i++) {
+        const ni = rows[i].findIndex(c => String(c).trim().toLowerCase() === 'nom');
+        if (ni !== -1) { headerIdx = i; nomCol = ni; break; }
+      }
+      if (nomCol === -1) {
+        showToast('Colonne "Nom" introuvable dans le fichier.');
+        return;
+      }
+
+      const noms = [];
+      for (let i = headerIdx + 1; i < rows.length; i++) {
+        const nom = String(rows[i][nomCol] || '').trim();
+        if (nom.length > 0) noms.push(nom);
+      }
+      if (noms.length === 0) { showToast('Aucun joueur trouvé dans le fichier.'); return; }
+      players = noms.map(nom => ({ nom, points: 0, exempt_count: 0 }));
+      renderPlayerList();
+      document.getElementById('players-section').style.display = 'block';
+      showToast(noms.length + ' joueurs importés');
+    } catch(err) { showToast('Erreur de lecture du fichier Excel.'); console.error(err); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ─── Render liste joueurs ──────────────────────────────────────
+function renderPlayerList() {
+  const list = document.getElementById('player-list');
+  list.innerHTML = players.map((p, i) => `
+    <div class="player-chip ${p.absent?'absent':''}" onclick="togglePlayer(${i})">
+      <div class="check"></div>
+      <span class="player-name">${esc(p.nom)}</span>
+      <span class="pts-badge">${p.points} pt${p.points>1?'s':''}</span>
+    </div>
+  `).join('');
+  updatePlayerCount();
+}
+
+function togglePlayer(i) {
+  players[i].absent = !players[i].absent;
+  renderPlayerList();
+}
+
+function toggleAll(present) {
+  players.forEach(p => p.absent = !present);
+  renderPlayerList();
+}
+
+function updatePlayerCount() {
+  const active = players.filter(p => !p.absent).length;
+  document.getElementById('players-count').textContent = active + ' joueur' + (active>1?'s':'') + ' sélectionné' + (active>1?'s':'');
+  const btn = document.getElementById('start-btn');
+  const warn = document.getElementById('start-warn');
+  if (active < 4) {
+    btn.disabled = true;
+    warn.textContent = 'Il faut au moins 4 joueurs.';
+  } else {
+    btn.disabled = false;
+    warn.textContent = '';
+  }
+}
+
+// ─── Lancer tournoi ───────────────────────────────────────────
+function lancerTournoi() {
+  currentRonde = 0;
+  exemptHistory = [];
+  rondeLog = [];
+  nouvelleRonde();
+}
+
+// ─── Tirage ronde ─────────────────────────────────────────────
+function nouvelleRonde() {
+  currentRonde++;
+  const actifs = players.filter(p => !p.absent);
+  const result = tirage(actifs);
+  currentMatchs = result.matchs;
+
+  // Mise à jour exemptés dans players
+  result.exemptes.forEach(nom => {
+    const p = players.find(x => x.nom === nom);
+    if (p) { p.points += 1; p.exempt_count = (p.exempt_count||0) + 1; }
+    exemptHistory.push(nom);
+  });
+
+  // Render section 1
+  document.getElementById('ronde-num-label').textContent = 'Ronde ' + currentRonde;
+  document.getElementById('ronde-meta').textContent = currentMatchs.length + ' match' + (currentMatchs.length>1?'s':'');
+
+  // Info points retardataire
+  const moy = calcMoyennePoints();
+  document.getElementById('late-info-text').textContent =
+    'Un retardataire sera ajouté avec ' + moy + ' point' + (moy>1?'s':'') + ' (⌊moyenne actuelle⌋).';
+
+  // Exemptés banner
+  const exemBanner = document.getElementById('exempt-banner');
+  if (result.exemptes.length > 0) {
+    exemBanner.style.display = 'block';
+    exemBanner.innerHTML = `<div class="alert alert-warning">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div>Équipe exemptée : <strong>${esc(result.exemptes.join(' & '))}</strong> — +1 point chacun (ils ne jouent pas cette ronde)</div>
+    </div>`;
+  } else {
+    exemBanner.style.display = 'none';
+  }
+
+  renderMatchGrid('match-grid', currentMatchs, false);
+  goTo(1);
+}
+
+function tirage(actifs) {
+  const matchs = [];
+  let exemptes = [];
+
+  // Grouper par points
+  const groupes = {};
+  actifs.forEach(p => {
+    const k = p.points;
+    if (!groupes[k]) groupes[k] = [];
+    groupes[k].push(p.nom);
+  });
+
+  for (const pts of Object.keys(groupes).sort((a,b) => Number(a)-Number(b))) {
+    let joueurs = [...groupes[pts]];
+    shuffle(joueurs);
+
+    // Exempter si non divisible par 4
+    while (joueurs.length % 4 !== 0) {
+      let found = false;
+      for (let i = joueurs.length - 1; i >= 0; i--) {
+        if (!exemptHistory.includes(joueurs[i])) {
+          exemptes.push(joueurs[i]);
+          joueurs.splice(i, 1);
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        // Tous ont été exemptés, on prend le dernier quand même
+        exemptes.push(joueurs[joueurs.length - 1]);
+        joueurs.splice(joueurs.length - 1, 1);
+      }
+    }
+
+    // Équipes 2x2
+    const equipes = [];
+    for (let i = 0; i < joueurs.length; i += 2) equipes.push([joueurs[i], joueurs[i+1]]);
+    shuffle(equipes);
+
+    // Appariement
+    for (let i = 0; i < equipes.length - 1; i += 2) {
+      matchs.push({ e1: equipes[i], e2: equipes[i+1], points: Number(pts), winner: null });
+    }
+  }
+
+  return { matchs, exemptes };
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+// ─── Render matchs ────────────────────────────────────────────
+function renderMatchGrid(containerId, matchs, interactive) {
+  const grid = document.getElementById(containerId);
+  if (matchs.length === 0) {
+    grid.innerHTML = '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Aucun match pour cette ronde.</div>';
+    return;
+  }
+  grid.innerHTML = matchs.map((m, idx) => {
+    const resolved = m.winner !== null;
+    const w1 = m.winner === 1, w2 = m.winner === 2;
+    const fn = interactive ? `selectWinner(${idx}, ` : ``;
+    const fnEnd = interactive ? `)` : ``;
+    return `
+    <div class="match-card ${resolved?'resolved':''}" id="mc-${containerId}-${idx}">
+      <div class="match-header">
+        <span>Match ${idx+1}</span>
+        <span class="pts-tag">${m.points} pt${m.points>1?'s':''}</span>
+      </div>
+      <div class="match-body">
+        <div class="match-team ${w1?'winner':''} ${w2?'loser':''}" ${interactive?`onclick="selectWinner(${idx})"`:''}
+          style="${interactive?'cursor:pointer':''}">
+          <div class="team-label">Équipe A</div>
+          <div class="team-names">${esc(m.e1[0])}<br>${esc(m.e1[1])}</div>
+        </div>
+        <div class="match-vs">VS</div>
+        <div class="match-team ${w2?'winner':''} ${w1?'loser':''}" ${interactive?`onclick="selectWinner(${idx}, true)"`:''}
+          style="${interactive?'cursor:pointer':''}">
+          <div class="team-label">Équipe B</div>
+          <div class="team-names">${esc(m.e2[0])}<br>${esc(m.e2[1])}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── Scores ───────────────────────────────────────────────────
+function goToScores() {
+  renderScoresGrid();
+  goTo(2);
+}
+
+function renderScoresGrid() {
+  const grid = document.getElementById('scores-grid');
+  grid.innerHTML = currentMatchs.map((m, idx) => {
+    const w1 = m.winner === 1, w2 = m.winner === 2;
+    return `
+    <div class="match-card ${m.winner?'resolved':''}" id="sm-${idx}">
+      <div class="match-header">
+        <span>Match ${idx+1} — clique sur le vainqueur</span>
+        <span class="pts-tag">${m.points} pt${m.points>1?'s':''}</span>
+      </div>
+      <div class="match-body">
+        <div class="match-team ${w1?'winner':''} ${w2?'loser':''}" onclick="selectWinner(${idx}, false)">
+          <div class="team-label">Équipe A</div>
+          <div class="team-names">${esc(m.e1[0])}<br>${esc(m.e1[1])}</div>
+        </div>
+        <div class="match-vs">VS</div>
+        <div class="match-team ${w2?'winner':''} ${w1?'loser':''}" onclick="selectWinner(${idx}, true)">
+          <div class="team-label">Équipe B</div>
+          <div class="team-names">${esc(m.e2[0])}<br>${esc(m.e2[1])}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  updateScoresProgress();
+}
+
+function selectWinner(idx, teamB) {
+  const m = currentMatchs[idx];
+  const newWinner = teamB ? 2 : 1;
+  // Toggle si on reclique sur le même
+  m.winner = (m.winner === newWinner) ? null : newWinner;
+  // Re-render juste cette carte
+  const card = document.getElementById('sm-' + idx);
+  if (card) {
+    const w1 = m.winner === 1, w2 = m.winner === 2;
+    card.className = 'match-card' + (m.winner ? ' resolved' : '');
+    const teams = card.querySelectorAll('.match-team');
+    teams[0].className = 'match-team' + (w1?' winner':'') + (w2?' loser':'');
+    teams[1].className = 'match-team' + (w2?' winner':'') + (w1?' loser':'');
+  }
+  updateScoresProgress();
+}
+
+function updateScoresProgress() {
+  const done = currentMatchs.filter(m => m.winner !== null).length;
+  const total = currentMatchs.length;
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('scores-progress-text').textContent = done + ' / ' + total + ' match' + (total>1?'s':'') + ' complété' + (done>1?'s':'');
+  document.getElementById('scores-progress-pct').textContent = pct + '%';
+  document.getElementById('scores-progress-fill').style.width = pct + '%';
+  document.getElementById('validate-btn').disabled = done < total;
+}
+
+// ─── Validation scores ────────────────────────────────────────
+function validerScores() {
+  currentMatchs.forEach(m => {
+    const winners = m.winner === 1 ? m.e1 : m.e2;
+    winners.forEach(nom => {
+      const p = players.find(x => x.nom === nom);
+      if (p) p.points++;
+    });
+  });
+  renderRanking();
+  goTo(3);
+}
+
+// ─── Classement ───────────────────────────────────────────────
+function renderRanking() {
+  document.getElementById('ranking-desc').textContent = 'Après ' + currentRonde + ' ronde' + (currentRonde>1?'s':'');
+  const sorted = [...players].sort((a,b) => b.points - a.points);
+  const tbody = document.getElementById('ranking-body');
+  tbody.innerHTML = sorted.map((p, i) => {
+    const cls = i===0?'rank-gold':i===1?'rank-silver':i===2?'rank-bronze':'';
+    const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+    return `<tr class="${cls}">
+      <td class="rank-pos">${i+1}</td>
+      <td>${medal ? medal+' ' : ''}${esc(p.nom)}</td>
+      <td class="rank-pts">${p.points}</td>
+      <td style="text-align:center">
+        <button onclick="supprimerJoueur('${p.nom.replace(/'/g,"\\'")}', this)" title="Retirer du tournoi"
+          style="background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:6px;color:var(--text-muted);line-height:1"
+          onmouseover="this.style.color='var(--danger)';this.style.background='var(--danger-light)'"
+          onmouseout="this.style.color='var(--text-muted)';this.style.background='none'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;display:block">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+          </svg>
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── Suppression joueur ───────────────────────────────────────
+function supprimerJoueur(nom, btn) {
+  if (!confirm('Retirer ' + nom + ' du tournoi ?')) return;
+  players = players.filter(p => p.nom !== nom);
+  exemptHistory = exemptHistory.filter(n => n !== nom);
+  renderRanking();
+  showToast(nom + ' retiré du tournoi.');
+}
+
+// ─── Retardataire ─────────────────────────────────────────────
+function calcMoyennePoints() {
+  const actifs = players.filter(p => !p.absent);
+  if (actifs.length === 0) return 0;
+  const sum = actifs.reduce((a,b) => a + b.points, 0);
+  return Math.floor(sum / actifs.length);
+}
+
+function ajouterRetardataire() {
+  const input = document.getElementById('late-name');
+  const nom = input.value.trim();
+  if (!nom) { showToast('Entre un nom.'); return; }
+  if (players.find(p => p.nom.toLowerCase() === nom.toLowerCase())) {
+    showToast('Ce joueur existe déjà.'); return;
+  }
+  const pts = calcMoyennePoints();
+  players.push({ nom, points: pts, absent: false });
+  input.value = '';
+  showToast(nom + ' ajouté avec ' + pts + ' point' + (pts>1?'s':'') + '.');
+  renderPlayerList();
+  // Met à jour info
+  const moy = calcMoyennePoints();
+  document.getElementById('late-info-text').textContent =
+    'Un retardataire sera ajouté avec ' + moy + ' point' + (moy>1?'s':'') + ' (⌊moyenne actuelle⌋).';
+}
+
+// ─── Export ───────────────────────────────────────────────────
+function exporterRonde() {
+  let txt = `========================================\n`;
+  txt += `         RONDE N°${currentRonde}\n`;
+  txt += `========================================\n\n`;
+  const exemptes = [];
+  players.forEach(p => { if (p.exempt_count > 0 && p.exempt_count === currentRonde) exemptes.push(p.nom); });
+  currentMatchs.forEach((m, i) => {
+    txt += `--- MATCH n°${i+1} --- (${m.points} pts)\n`;
+    txt += `${m.e1[0]} & ${m.e1[1]}\nVS\n${m.e2[0]} & ${m.e2[1]}\n\n`;
+  });
+  telecharger('ronde_' + currentRonde + '.txt', txt);
+}
+
+function exporterClassement() {
+  const sorted = [...players].sort((a,b) => b.points - a.points);
+  let txt = `CLASSEMENT — Après ronde ${currentRonde}\n${'─'.repeat(30)}\n`;
+  sorted.forEach((p,i) => txt += `${i+1}. ${p.nom} — ${p.points} pt${p.points>1?'s':''}\n`);
+  telecharger('classement_ronde_' + currentRonde + '.txt', txt);
+}
+
+function telecharger(nom, contenu) {
+  const a = document.createElement('a');
+  a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(contenu);
+  a.download = nom;
+  a.click();
+}
+
+// ─── Toast ────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ─── Utils ────────────────────────────────────────────────────
+function esc(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
